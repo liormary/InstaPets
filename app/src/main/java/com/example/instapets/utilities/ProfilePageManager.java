@@ -39,16 +39,12 @@ public class ProfilePageManager {
         name = view.findViewById(R.id.txt_name);
         username = view.findViewById(R.id.txt_username);
         bio = view.findViewById(R.id.txt_bio);
-
         noOfPosts = view.findViewById(R.id.txt_post_count);
         noOfFollowers = view.findViewById(R.id.txt_followers_count);
         noOfFollowing = view.findViewById(R.id.txt_following_count);
-
         picturesButton = view.findViewById(R.id.btn_my_pictures);
         textButton = view.findViewById(R.id.btn_my_kitts);
-
         recyclerViewMyPosts = view.findViewById(R.id.recyclerview_my_posts);
-
         picturesIndicator = view.findViewById(R.id.indicator_pictures);
         textIndicator = view.findViewById(R.id.indicator_kitts);
 
@@ -56,11 +52,15 @@ public class ProfilePageManager {
         handlePostsArea();
     }
 
+    //This private method is responsible for setting up the posts area of the user's profile.
+    //It initializes MyPictureAdapter and MyTextAdapter for managing user posts,
+    //configures the GridLayoutManager for the recyclerViewMyPosts,
+    //and sets click listeners for the "My Pictures" and "My Kitts" buttons
+    //to switch between different types of posts and update UI elements accordingly.
     private void handlePostsArea() {
 
         myPictureAdapter = new MyPictureAdapter(context);
         myTextAdapter = new MyTextAdapter(context);
-
         layoutManager = new GridLayoutManager(context, 3);
 
         recyclerViewMyPosts.setHasFixedSize(true);
@@ -69,7 +69,7 @@ public class ProfilePageManager {
 
         picturesButton.setOnClickListener(v -> {
             recyclerViewMyPosts.setAdapter(myPictureAdapter);
-            layoutManager.setSpanCount(3);
+            layoutManager.setSpanCount(3); //number of posts in the grid
             picturesIndicator.setVisibility(View.VISIBLE);
             textIndicator.setVisibility(View.INVISIBLE);
         });
@@ -81,6 +81,9 @@ public class ProfilePageManager {
         });
     }
 
+    //This method reads and populates the user's posts from a DocumentReference (userReference).
+    //It retrieves user and post data from Firebase, and for each post,
+    //it adds it to either myPictureAdapter or myTextAdapter based on the content type (image or text).
     public void readPosts(DocumentReference userReference) {
         userReference.get().addOnSuccessListener(userSnapshot -> {
             User user = userSnapshot.toObject(User.class);
@@ -105,6 +108,8 @@ public class ProfilePageManager {
         });
     }
 
+    //This method populates the user's profile data based on the provided User object.
+    //It also sets the visibility of the view to View.VISIBLE.
     public void fillUserData(User user) {
         String txt_username = "@" + user.getUsername();
 

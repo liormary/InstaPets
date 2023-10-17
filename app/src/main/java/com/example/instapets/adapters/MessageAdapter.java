@@ -31,7 +31,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private Context mContext;
     private List<Chat> mChat;
     private String imageurl;
-    String fuser;
+    String fuser; //A string to store the user's email (used to identify sent messages).
 
     public MessageAdapter(Context mContext, List<Chat> mChat, String imageurl) {
         this.mChat = mChat;
@@ -40,6 +40,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         sharedPrefUtils = new SharedPrefUtils(mContext);
     }
 
+    //This method is called when the RecyclerView needs a new ViewHolder for a message item.
+    //It inflates the appropriate layout for either sent or received messages based on the message type (viewType).
     @NonNull
     @Override
     public MessageAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -52,6 +54,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
+    //This method is called for each item in the RecyclerView to bind data to the ViewHolder.
+    //It retrieves data from the mChat list for the specific position
+    //and displays the message text, sender's profile image, and message status ("Seen" or "Delivered").
+    //It also formats and displays the message timestamp.
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         Chat chat = mChat.get(position);
@@ -60,7 +66,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             holder.time_tv.setText(holder.convertTime(chat.getTime()));
         }
 
-        if (imageurl == null ||imageurl.equals("default")) {
+        if (imageurl == null || imageurl.equals("default")) {
             holder.profile_image.setImageResource(R.drawable.logo);
         } else {
             Glide.with(mContext).load(imageurl).into(holder.profile_image);
@@ -78,11 +84,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     }
 
+    //This method returns the total number of items in the RecyclerView, which is the size of the mChat list.
     @Override
     public int getItemCount() {
         return mChat.size();
     }
 
+    //This inner class represents the ViewHolder for a message item in the RecyclerView.
+    //It holds references to UI elements like the message text,
+    //sender's profile image, message status, and timestamp.
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView show_message;
@@ -102,6 +112,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             rldelete = itemView.findViewById(R.id.leftRelative);
         }
 
+        //This method is used to convert a timestamp (in milliseconds)
+        //to a formatted time string in the "h:mm a" format
         public String convertTime(String time) {
             SimpleDateFormat formatter = new SimpleDateFormat("h:mm a");
             String dateString = formatter.format(new Date(Long.parseLong(time)));
@@ -109,6 +121,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
+    //This method determines the view type (left or right) for a message item at a given position
+    //based on whether the sender's email matches the user's email (stored in shared preferences).
     @Override
     public int getItemViewType(int position) {
         fuser = sharedPrefUtils.get("email").replace(".","");

@@ -38,13 +38,16 @@ import java.util.TreeSet;
 
 public class MyPictureAdapter extends RecyclerView.Adapter<MyPictureAdapter.ViewHolder> {
     Context mContext;
-    TreeSet<DocumentReference> mPosts;
-    FirebaseFirestore db;
-    DocumentReference userReference;
+    TreeSet<DocumentReference> mPosts; //A collection of Firebase document references representing the user's picture posts.
+    FirebaseFirestore db; // An instance of Firebase for interacting with the database.
+    DocumentReference userReference; //A reference to the user's Firebase document.
     private SharedPrefUtils prefUtils;
     boolean isLiked;
 
-
+    //The constructor initializes the adapter with the provided Context.
+    //It also initializes the mPosts collection, Firebase, and the userReference.
+    //The constructor checks the Android API version and creates a TreeSet with
+    //a comparator that orders document references based on their IDs in reverse order (latest first).
     public MyPictureAdapter(Context mContext) {
         this.mContext = mContext;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -52,16 +55,22 @@ public class MyPictureAdapter extends RecyclerView.Adapter<MyPictureAdapter.View
         }
     }
 
+    //This method adds a new picture post (represented by a DocumentReference)
+    //to the mPosts collection and notifies the adapter that the data has changed.
     public void addPost(DocumentReference post) {
         mPosts.add(post);
         notifyDataSetChanged();
     }
 
+    //This method clears all picture posts from the mPosts collection
+    //and notifies the adapter that the data has changed.
     public void clearPosts() {
         mPosts.clear();
         notifyDataSetChanged();
     }
 
+    //This method is called when the RecyclerView needs a new ViewHolder for a picture post item.
+    //It inflates the appropriate layout for picture posts (R.layout.adapter_my_picture).
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -72,6 +81,10 @@ public class MyPictureAdapter extends RecyclerView.Adapter<MyPictureAdapter.View
         return new MyPictureAdapter.ViewHolder(view);
     }
 
+    //This method is called for each item in the RecyclerView to bind data to the ViewHolder.
+    // It loads and displays picture posts, including the user's profile image, post likes, comments,
+    // and the post's caption.
+    // It also handles user interactions like liking posts and opening a detailed preview of the picture post.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DocumentReference postReference = mPosts.toArray(new DocumentReference[0])[position];
@@ -82,6 +95,7 @@ public class MyPictureAdapter extends RecyclerView.Adapter<MyPictureAdapter.View
         LottieAnimationView likeAnimation;
         ImageView profileImage, like, comment, save, postImage;
         TextView username, noOfLikes, kitt, commentCount, time;
+
         ImageView previewImageView = dialog.findViewById(R.id.img_mypost);
         profileImage = dialog.findViewById(R.id.img_profile);
         noOfLikes = dialog.findViewById(R.id.txt_likes);
@@ -91,6 +105,7 @@ public class MyPictureAdapter extends RecyclerView.Adapter<MyPictureAdapter.View
         commentCount = dialog.findViewById(R.id.txt_comment_count);
         like = dialog.findViewById(R.id.btn_like);
         comment = dialog.findViewById(R.id.btn_comment);
+
         postReference.get().addOnSuccessListener(postSnapshot -> {
             Post post = postSnapshot.toObject(Post.class);
             assert post != null;
@@ -112,6 +127,7 @@ public class MyPictureAdapter extends RecyclerView.Adapter<MyPictureAdapter.View
 
             if (isLiked) like.setImageResource(R.drawable.ic_heart);
             else like.setImageResource(R.drawable.ic_heart_outlined);
+
             DatabaseReference commentsReference = FirebaseDatabase.getInstance().getReference().child("comments").child(post.getPostid());
             commentsReference.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -190,18 +206,20 @@ public class MyPictureAdapter extends RecyclerView.Adapter<MyPictureAdapter.View
 
         holder.myPostImage.setOnClickListener(v -> {
             dialog.show();
-//            return true;
         });
 
 
     }
 
 
+    //This method returns the total number of picture posts in the mPosts collection.
     @Override
     public int getItemCount() {
         return mPosts.size();
     }
 
+    //This inner class represents the ViewHolder for a picture post item in the RecyclerView.
+    //It holds a reference to the image view for displaying the post's image.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView myPostImage;
 

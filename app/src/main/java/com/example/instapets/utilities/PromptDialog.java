@@ -26,17 +26,22 @@ import com.example.instapets.databinding.PromptDialogBinding;
  * this class responsible for the screen that appears after we press the create post button
  */
 
+//DialogFragment used to display a dialog with options for user input.
 public class PromptDialog extends DialogFragment {
-    PromptDialogBinding binding;
+    PromptDialogBinding binding; //connects the UI elements defined in the R.layout.prompt_dialog layout to the object
     private int mRequestCode;
     private DismissListener mDismissListener;
 
+    //An interface that defines callback methods for dialog dismissal events.
+    // It provides methods for handling different scenarios when the dialog is dismissed.
     public static interface DismissListener {
         public void onDialogDismiss(int requestCode, int resultCode);
         public void onpPhotoEntry(int requestCode, int resultCode);
         public void onTextEntry(int requestCode, int resultCode);
     }
 
+    //A static factory method for creating an instance of PromptDialog.
+    // It allows you to set the request code and the dismiss listener for the dialog.
     public static final PromptDialog getInstance(int requestCode, DismissListener listener) {
         PromptDialog dlg = new PromptDialog();
 
@@ -46,9 +51,16 @@ public class PromptDialog extends DialogFragment {
         return dlg;
     }
 
+    //A private constructor that does not take any parameters.
+    // This is typically used to enforce the use of the factory method for creating instances of PromptDialog.
     private PromptDialog() {
     }
 
+    //This method is called when the dialog is created.
+    // It inflates the dialog's layout from R.layout.prompt_dialog,
+    // sets various properties for the dialog (e.g., no title, transparent background),
+    // and handles click events for different UI elements,
+    // starting the appropriate callback methods of the DismissListener when the user interacts with the dialog.
     @SuppressLint("InflateParams")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,18 +101,25 @@ public class PromptDialog extends DialogFragment {
             }
         });
 
-
+        //This code loads an animation from a resource file and applies it to the root view of the dialog's layout.
+        //This animation is used to provide a visual effect when the dialog is displayed.
+        //The root view is then returned to be displayed within the dialog.
+        //The specific animation effect and its details are defined in the resource file guide_save_succ_dlg_enter.
         final Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.guide_save_succ_dlg_enter);
         binding.getRoot().startAnimation(anim);
         return binding.getRoot();
     }
 
+    //This method is called when the dialog is displayed.
+    //It sets the dimensions of the dialog window to match the screen.
     @Override
     public void onStart() {
         super.onStart();
         getDialog().getWindow().setLayout(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
     }
 
+    //This method is called when the dialog is canceled (when the user presses the cancel button).
+    //It calls the appropriate onDialogDismiss method of the DismissListener to handle the dismissal event.
     @Override
     public void onCancel(DialogInterface dialog) {
         if (mDismissListener != null) {

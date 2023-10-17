@@ -36,6 +36,7 @@ import java.util.TreeSet;
 /**
  * this class represents the widget of the text posts that the user upload in his profile
  */
+
 public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder> {
     Context mContext;
     TreeSet<DocumentReference> mPosts;
@@ -44,6 +45,10 @@ public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder
     private SharedPrefUtils prefUtils;
     boolean isLiked;
 
+    //The constructor initializes the adapter with the provided Context.
+    //It also initializes the mPosts collection, Firebase, and the userReference.
+    //The constructor checks the Android API version and creates a TreeSet with a comparator
+    //that orders document references based on their IDs in reverse order (latest first).
     public MyTextAdapter(Context mContext) {
         this.mContext = mContext;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -51,16 +56,22 @@ public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder
         }
     }
 
+    //This method adds a new text post (represented by a DocumentReference)
+    //to the mPosts collection and notifies the adapter that the data has changed.
     public void addPost(DocumentReference post) {
         mPosts.add(post);
         notifyDataSetChanged();
     }
 
+    //This method clears all text posts from the mPosts collection
+    //and notifies the adapter that the data has changed.
     public void clearPosts() {
         mPosts.clear();
         notifyDataSetChanged();
     }
 
+    //This method is called when the RecyclerView needs a new ViewHolder for a text post item.
+    //It inflates the appropriate layout for text posts (R.layout.adapter_my_kitt).
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -71,10 +82,13 @@ public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder
         return new MyTextAdapter.ViewHolder(view);
     }
 
+    //This method is called for each item in the RecyclerView to bind data to the ViewHolder.
+    // It loads and displays text posts, including the user's profile image, post likes, comments,
+    // and the post's content (kitt).
+    // It also handles user interactions like liking posts and opening a detailed preview of the text post.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DocumentReference postReference = mPosts.toArray(new DocumentReference[0])[position];
-
         Dialog dialog = new Dialog(mContext);
         dialog.getWindow().setBackgroundDrawableResource(R.color.transparent);
         dialog.setContentView(R.layout.dialog_my_kitt_preview);
@@ -84,6 +98,7 @@ public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder
         View header;
         LottieAnimationView likeAnimation;
         TextView username, noOfLikes, kitt, commentCount, time;
+
         ImageView previewImageView = dialog.findViewById(R.id.img_mypost);
         postImage = dialog.findViewById(R.id.img_post);
         profileImage = dialog.findViewById(R.id.img_profile);
@@ -97,6 +112,7 @@ public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder
         username = dialog.findViewById(R.id.txt_username);
         commentCount = dialog.findViewById(R.id.txt_comment_count);
         kitt = dialog.findViewById(R.id.txt_kitt);
+
         postReference.get().addOnSuccessListener(postSnapshot -> {
             Post post = postSnapshot.toObject(Post.class);
             assert post != null;
@@ -123,6 +139,7 @@ public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder
             if (isLiked) like.setImageResource(R.drawable.ic_heart);
             else like.setImageResource(R.drawable.ic_heart_outlined);
             DatabaseReference commentsReference = FirebaseDatabase.getInstance().getReference().child("comments").child(post.getPostid());
+
             commentsReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -142,6 +159,7 @@ public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder
 
                 }
             });
+
             commentCount.setOnClickListener(view -> {
                 Intent intent = new Intent(mContext, CommentsActivity.class);
                 intent.putExtra("postid", post.getPostid());
@@ -150,6 +168,7 @@ public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder
 
                 mContext.startActivity(intent);
             });
+
             comment.setOnClickListener(view -> {
                 Intent intent = new Intent(mContext, CommentsActivity.class);
                 intent.putExtra("postid", post.getPostid());
@@ -196,15 +215,18 @@ public class MyTextAdapter extends RecyclerView.Adapter<MyTextAdapter.ViewHolder
 
         holder.container.setOnClickListener(v -> {
             dialog.show();
-//            return true;
         });
     }
 
+    //This method returns the total number of text posts in the mPosts collection.
     @Override
     public int getItemCount() {
         return mPosts.size();
     }
 
+    //This inner class represents the ViewHolder for a text post item in the RecyclerView.
+    // It holds references to UI elements like the text content (kitt), the post's timestamp,
+    // and the post container view.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView kitt, time;
         View container;

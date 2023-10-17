@@ -34,6 +34,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         this.mComments = mComments;
     }
 
+    //This method is called when the RecyclerView needs a new ViewHolder to represent an item.
+    //It inflates the layout for an individual comment item (R.layout.adapter_comment)
+    // and creates a new ViewHolder for it.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -41,6 +44,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         return new CommentAdapter.ViewHolder(view);
     }
 
+    //This method is called for each item in the RecyclerView to bind data to the ViewHolder.
+    //this method is loading the data from the mComments list from Firebase
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Comment comment = mComments.get(position);
@@ -51,6 +56,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                 Glide.with(mContext).load(user.getProfileImageUrl()).into(holder.profileImage);
                 holder.username.setText(user.getUsername());
                 holder.comment.setText(comment.getText());
+
                 holder.container.setOnClickListener(view -> {
                     Intent intent = new Intent(mContext, OtherProfileActivity.class);
                     intent.putExtra("userid", user.getId());
@@ -61,11 +67,15 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
         });
     }
 
+    //This method returns the total number of items in the RecyclerView,
+    //which is the size of the mComments list
     @Override
     public int getItemCount() {
         return mComments.size();
     }
 
+    //This inner class represents the ViewHolder for an individual comment item in the RecyclerView.
+    //It holds references to the profile image, username, comment text, and the comment container view.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView profileImage;
         TextView username, comment;
