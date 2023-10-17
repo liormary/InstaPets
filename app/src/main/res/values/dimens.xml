@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="icon_size_small">20dp</dimen>
+    <dimen name="icon_size_medium">26dp</dimen>
+    <dimen name="icon_size_big">30dp</dimen>
+    <dimen name="profile_img_icon_size">45dp</dimen>
+    <dimen name="text_small">10sp</dimen>
+    <dimen name="text_little_small">12sp</dimen>
+    <dimen name="text_normal">14sp</dimen>
+    <dimen name="text_little_big">16sp</dimen>
+    <dimen name="text_big">18sp</dimen>
+    <dimen name="setting_icon_size">25dp</dimen>
+    <dimen name="post_profile_image_size">35dp</dimen>
+    <dimen name="margin_20_dp">20dp</dimen>
+    <dimen name="margin_30_dp">30dp</dimen>
+    <dimen name="text_size_16_sp">16sp</dimen>
+    <dimen name="margin_10_dp">10dp</dimen>
+    <dimen name="text_size_14_sp">14sp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+
+
+    <dimen name="mainFormsFontSize">16sp</dimen>
+
+
+</resources>

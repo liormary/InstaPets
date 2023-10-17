@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/ic_new_post"
+        android:title=""
+        android:visible="false"
+
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/nav_post_image"
+                android:icon="@drawable/ic_image"
+                android:visible="false"
+
+                android:title="Picture" />
+            <item
+                android:id="@+id/nav_post_text"
+                android:icon="@drawable/ic_text"
+                android:title="Text" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/nav_chat"
+        android:icon="@drawable/ic_chat"
+        android:title=""
+        app:showAsAction="ifRoom" />
+</menu>

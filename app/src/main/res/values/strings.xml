@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">InstaPets</string>
+    <string name="default_profile_img_url">https://pbs.twimg.com/profile_images/1405127988698484742/uYU_Y5wZ_400x400.jpg</string>
+    <string name="default_background_img_url">https://media.istockphoto.com/id/1294440250/vector/seamless-gray-pattern-with-dog-paws-and-bones.jpg?s=612x612&amp;w=0&amp;k=20&amp;c=nCTuqIEW5NHVvmsPuNShXRck0_EhzMskcnCY4qd70XI=</string>
+</resources>

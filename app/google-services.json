@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "998263083237",
+    "firebase_url": "https://instapets-58630-default-rtdb.firebaseio.com",
+    "project_id": "instapets-58630",
+    "storage_bucket": "instapets-58630.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998263083237:android:ed515f8edbd627c459c40c",
+        "android_client_info": {
+          "package_name": "com.example.instapets"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnkEFyZIRqkZ_9dKMC-sgmJih0x20PQbo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
