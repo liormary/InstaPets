@@ -31,6 +31,12 @@ public class SettingsActivity extends AppCompatActivity {
     private SharedPrefUtils prefUtils;
     LinearLayout linearLayout;
 
+    //This method is called when the activity is created.
+    //It initializes various UI elements, such as a LinearLayout for settings and a TextView for logging out.
+    //It also sets up click listeners for these UI elements.
+    //The userReference is used to access the user's document in the Firebase database.
+    //Clicking on "Logout" clears the user's email in shared preferences and finishes the activity,
+    // effectively logging the user out.
     @SuppressLint("NonConstantResourceId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,26 +63,20 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SettingsActivity.this, EditInfoActivity.class));
-
             }
         });
-
         updateUserData();
         findViewById(R.id.btn_close).setOnClickListener(v -> finish());
     }
 
+
+    //This method updates User Data only in a case of success
     private void updateUserData() {
         userReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 User user = task.getResult().toObject(User.class);
                 assert user != null;
-
             }
         });
     }
-
-
-
-
-
 }

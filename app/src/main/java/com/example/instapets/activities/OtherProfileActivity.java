@@ -31,6 +31,10 @@ public class OtherProfileActivity extends AppCompatActivity {
     boolean amFollowing;
     private SharedPrefUtils prefUtils;
 
+    //This method is called when the activity is created.
+    //It sets up click listeners for the follow/unfollow button and the message button,
+    //it checks if the current user is viewing their own profile, and if so,
+    // hides the follow/unfollow and message buttons.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +70,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         });
     }
 
-    //in case our user chooses to follow/unfollow other user
+    //This method allows the current user to follow/unfollow other user
     private void toggleFollow() {
         amFollowing = !amFollowing;
         //in any case of following or not - she shall update the firebase
@@ -103,7 +107,9 @@ public class OtherProfileActivity extends AppCompatActivity {
         updateFollowButton();
     }
 
-    //in case of a change, we shall update the label about if the user follow him now or not
+    //This method updates the text and appearance of the follow button based on whether
+    // the current user is following the other user.
+    // It sets the button text to "Following" or "Follow" and changes the background color accordingly.
     void updateFollowButton() {
         if (amFollowing) {
             followButton.setText("Following");
@@ -114,8 +120,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         }
     }
 
-    /* create the other user's page with all the info from firebase
-     */
+    // This method creates the other user's page with all the info from firebase
     void fillUserData() {
         userReference.get().addOnSuccessListener(documentSnapshot -> {
             User user = documentSnapshot.toObject(User.class);
@@ -129,7 +134,8 @@ public class OtherProfileActivity extends AppCompatActivity {
         });
     }
 
-    //allows the visitor user to see the post from his profile
+    //This method displays the posts of the other user on his profile page.
+    //It reads the posts associated with the other user from Firebase and displays them in a scrollable list
     private void readPosts() {
         profilePageManager.readPosts(userReference);
     }

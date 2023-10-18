@@ -56,6 +56,12 @@ public class EditInfoActivity extends AppCompatActivity {
         }
     });
 
+    // This method is called when the activity is created. Key functionality includes:
+    //Initializing views and data structures, registering click listeners for the "Change Profile Image",
+    //"Save Info," and "Close" buttons, filling the user's data from Firebase to populate the UI elements,
+    //monitoring user input for the username field in real-time to validate its format and check for uniqueness,
+    //updating the data map with edited information (name, username, bio) and calling the updateData()
+    // or updateImageAndData() methods to save the updated information to Firebase Storage.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,10 +92,8 @@ public class EditInfoActivity extends AppCompatActivity {
             }
         });
 
-        /*
-         * monitors the text input in real-time
-         * and performs certain actions based on the input
-         */
+
+         // monitors the text input in real-time and performs certain actions based on the input
         username.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -152,7 +156,8 @@ public class EditInfoActivity extends AppCompatActivity {
         });
     }
 
-    //fills up the user's data from the firebase
+    //This method updates the user's data from the firebase
+    // It uses the DocumentReference to update the user's document with the modified data (name, username, bio).
     private void fillUserData() {
         userReference = FirebaseFirestore.getInstance().collection("Users")
                 .document(prefUtils.get("email").replace(".",""));
@@ -166,14 +171,18 @@ public class EditInfoActivity extends AppCompatActivity {
         });
     }
 
-    //opens a post
+    //This method opens the image gallery for the user to select a new profile image.
+    // It utilizes an activity result launcher (myActivityResultLauncher) for the image selection.
     private void selectImage() {
         Intent intent = new Intent();
         intent.setType("image/*").setAction(Intent.ACTION_GET_CONTENT);
         myActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 
-    //updating data of the profile image
+    //This method updates the user's profile image and other data in Firebase Storage.
+    // It first uploads the new profile image to Firebase Storage and then updates
+    // the user's Firebase document with the image URL.
+    // A progress dialog is used to inform the user about the image upload progress.
     private void updateImageAndData() {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         ProgressDialog progressDialog = new ProgressDialog(this);

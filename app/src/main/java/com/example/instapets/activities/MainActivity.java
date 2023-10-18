@@ -24,6 +24,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseUser user;
     String currentPage;
 
+    // Overrides the behavior of the back button.
+    // If the current page is Home, the default behavior is used, allowing the user to navigate back.
+    // If the current page is not Home, the Home page is selected.
     @Override
     public void onBackPressed() {
         if (currentPage.equals("HOME")) {
@@ -34,10 +37,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //A helper method to replace the current fragment in the container with the specified fragment.
     void startFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction().replace(R.id.frame_container, fragment).commit();
     }
 
+    //This method is called when the activity is created.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         startFragment(currentPage);
     }
 
-    //fragments
+    // A method for creating and displaying the specified fragment based on the provided string
     public void startFragment(String fragment) {
         Fragment frag = null;
         switch (fragment) {

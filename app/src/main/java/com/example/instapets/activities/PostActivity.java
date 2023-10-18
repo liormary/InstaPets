@@ -59,9 +59,8 @@ public class PostActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> fromGalleryResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent data = result.getData();
-            /*also important to check if the photo from the gallery isn't null unlike the
-             * camera that creates it and makes sure its isn't null
-             */
+            // also important to check if the photo from the gallery isn't null unlike the
+            // camera that creates it and makes sure its isn't null
             if (data != null && data.getData() != null) {
                 filePath = data.getData();
                 showActivity(true);
@@ -71,6 +70,8 @@ public class PostActivity extends AppCompatActivity {
             startMainActivity();
         }
     });
+
+
     //in case of uploading a photo from the phone camera
     ActivityResultLauncher<Intent> fromCameraResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
@@ -81,6 +82,11 @@ public class PostActivity extends AppCompatActivity {
         }
     });
 
+    //This method is called when the activity is created.
+    //It initializes various UI elements, such as an ImageView for displaying the selected image,
+    // a TextView for adding a caption, and buttons for posting or canceling.
+    //It checks the type of content the user wants to post (either a picture or text)
+    // based on the value passed through an intent.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,7 +98,6 @@ public class PostActivity extends AppCompatActivity {
 
         imageView = findViewById(R.id.post_img);
         caption = findViewById(R.id.et_caption);
-
         ImageView closeButton = findViewById(R.id.btn_close);
         ImageView postButton = findViewById(R.id.btn_post);
 
@@ -121,11 +126,13 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-    //??????????  DIOLOG....
+    //This method displays a select source dialog that allows the user to select the source of the content,
+    // such as whether to choose an image from the gallery or capture a photo using the camera.
     void showDialog() {
         SelectSourceDialogFragment newFragment = SelectSourceDialogFragment.newInstance();
         newFragment.show(getSupportFragmentManager(), "dialog");
     }
+
 
     private File createImageFile() throws IOException {
         String timeStamp = DateFormatter.getCurrentTime();
@@ -141,6 +148,8 @@ public class PostActivity extends AppCompatActivity {
         return image;
     }
 
+    // This method is used to close the on-screen keyboard,
+    // ensuring that the keyboard is hidden when the user finishes typing a caption for the post.
     private void closeKeyboard() {
         View view = this.getCurrentFocus();
         if (view != null) {
@@ -149,6 +158,8 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
+    //This method is called when the user chooses to take a photo using the device's camera.
+    //It creates a file to save the captured image and then launches the camera app to capture a photo.
     private void takePicture() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -160,7 +171,7 @@ public class PostActivity extends AppCompatActivity {
             }
             if (photoFile != null) {
                 filePath = FileProvider.getUriForFile(this,
-                        getPackageName()+".fileprovider",
+                        getPackageName() + ".fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, filePath);
                 fromCameraResultLauncher.launch(Intent.createChooser(takePictureIntent, "Select Picture"));
@@ -168,7 +179,12 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
-    //????? DIOLOG....
+    //This method is called when the user decides to publish a post.
+    //If an image (filePath) is selected, it uploads the image to Firebase Storage and saves the download
+    // URL to Firebase.
+    //If the user only wants to create a text post, it creates a post object without an image URL.
+    //It updates user-specific documents in the database to maintain information about posts and feeds.
+    //Finally, it calls startMainActivity to navigate back to the main activity.
     private void publishPost() {
         if (filePath != null) {
             ProgressDialog progressDialog = new ProgressDialog(this);
@@ -186,7 +202,7 @@ public class PostActivity extends AppCompatActivity {
                 Toast.makeText(this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
 
                 storageReference.child("Posts").child(postId).getDownloadUrl().addOnSuccessListener(uri -> {
-                    Post post = new Post(prefUtils.get("email").replace(".",""), postId, uri.toString(), caption.getText().toString());
+                    Post post = new Post(prefUtils.get("email").replace(".", ""), postId, uri.toString(), caption.getText().toString());
                     DocumentReference postRef = db.collection("Posts").document(postId);
 
                     postRef.set(post).addOnCompleteListener(task -> {
@@ -209,7 +225,7 @@ public class PostActivity extends AppCompatActivity {
             });
         } else {
             String postId = DateFormatter.getCurrentTime();
-            Post post = new Post(prefUtils.get("email").replace(".",""), postId, "", "");
+            Post post = new Post(prefUtils.get("email").replace(".", ""), postId, "", "");
             post.setKitt(caption.getText().toString());
             DocumentReference postRef = db.collection("Posts").document(postId);
             postRef.set(post).addOnCompleteListener(task -> {
@@ -219,8 +235,12 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
+    // This method updates the user's posts and feed in the Firebase database.
+    // It adds the post reference to the user's "posts" array and sets the "visited" status to
+    // false in the "feed" collection.
+    // It also updates the "feed" collection for followers of the user who created the post.
     void updateUserPostsAndFeed(DocumentReference postReference) {
-        DocumentReference userReference = db.collection("Users").document(prefUtils.get("email").replace(".",""));
+        DocumentReference userReference = db.collection("Users").document(prefUtils.get("email").replace(".", ""));
         userReference.update("posts", FieldValue.arrayUnion(postReference));
         Map<String, Object> map = new HashMap<>();
         map.put("postReference", postReference);
@@ -235,7 +255,8 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
-    //after finishing creating a post - returns to the main activity
+    //This method returns to the main activity of the app.
+    // It's called after the user has successfully posted content.
     public void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -243,6 +264,8 @@ public class PostActivity extends AppCompatActivity {
         finish();
     }
 
+    //This method is used when the user wants to select an image from the gallery.
+    // It launches the gallery to choose an image.
     private void selectPicture() {
         Intent intent = new Intent();
         intent.setType("image/*");
@@ -250,15 +273,21 @@ public class PostActivity extends AppCompatActivity {
         fromGalleryResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 
+    //This method shows or hides the main content of the activity based on the value of the set parameter.
+    // It's used to control the visibility of UI elements during the content creation process.
     private void showActivity(boolean set) {
         if (set) findViewById(R.id.post_parent).setVisibility(View.VISIBLE);
         else findViewById(R.id.post_parent).setVisibility(View.INVISIBLE);
     }
 
+    //This method is called when the user selects to capture a photo
+    // from the camera in the source selection dialog.
     public void selectFromCamera() {
         takePicture();
     }
 
+    //These methods are called when the user selects to pick an image
+    // from the gallery in the source selection dialog.
     public void selectFromGallery() {
         selectPicture();
     }

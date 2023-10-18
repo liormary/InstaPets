@@ -39,6 +39,11 @@ public class CommentsActivity extends AppCompatActivity {
     DatabaseReference commentsReference;
     private SharedPrefUtils prefUtils;
 
+    // This method is called when the activity is created. Key functionality includes:
+    //Setting the status bar color to white, initializing views and data structures,
+    //registering click listeners for the send button and close button,
+    //reading and displaying comments by calling the readComments() method
+    //and handling a flag to open the keyboard if necessary.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +76,7 @@ public class CommentsActivity extends AppCompatActivity {
         sendButton.setOnClickListener(v -> {
             String commentString = commentText.getText().toString();
             if (commentString.isEmpty()) return;
-            DocumentReference userReference = FirebaseFirestore.getInstance().collection("Users").document(prefUtils.get("email").replace(".",""));
+            DocumentReference userReference = FirebaseFirestore.getInstance().collection("Users").document(prefUtils.get("email").replace(".", ""));
 
             String commentId = DateFormatter.getCurrentTime();
             Comment comment = new Comment(userReference.getId(), commentString, commentId);
@@ -87,12 +92,9 @@ public class CommentsActivity extends AppCompatActivity {
         closeButton.setOnClickListener(view -> finish());
     }
 
-
-    /*
-     * This method is used to intercept touch events
-     * sent to the activity before they are dispatched to the window. In this case, it's being used to handle
-     * touch events and close the keyboard if it is currently open
-     */
+     // This method is used to intercept touch events sent to the activity before
+     // they are dispatched to the window. In this case, it's being used to handle
+     // touch events and close the keyboard if it is currently open
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         View focused = getCurrentFocus();
@@ -102,10 +104,7 @@ public class CommentsActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(event);
     }
 
-    /*
-     * this method meant for representing all the comments in a post for
-     * the firebase
-     */
+    // this method meant for representing all the comments in a post from the firebase
     private void readComments() {
         //getting from the Firebase all the comments
         commentsReference.get().addOnCompleteListener(task -> {

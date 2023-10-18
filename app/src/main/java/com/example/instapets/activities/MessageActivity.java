@@ -46,18 +46,12 @@ public class MessageActivity extends AppCompatActivity {
     DatabaseReference reference;
     ImageButton btn_send;
     EditText text_send;
-
     MessageAdapter messageAdapter;
     List<Chat> mchat;
-
     RecyclerView recyclerView;
-
     Intent intent;
-
     String userid;
-
     SharedPrefUtils sharedPrefUtils;
-
     boolean notify = false;
 
     @Override
@@ -124,7 +118,7 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    //this methode sends in a real time a message and saves it into the firebase
+    //This method sends in a real time a message and saves it into the firebase
     private void sendMessage(String sender, final String receiver, String message, String time){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -144,12 +138,11 @@ public class MessageActivity extends AppCompatActivity {
                 .child(fuser)
                 .child(userid);
 
-        /*
-         * This code checks if the chat list entry for the sender
-         * (fuser) and receiver (userid) already exists.
-         * If it doesn't exist, it creates a new entry with the id
-         * field set to the receiver's user ID.
-         */
+
+         // This code checks if the chat list entry for the sender
+         // (fuser) and receiver (userid) already exists.
+         // If it doesn't exist, it creates a new entry with the id
+         // field set to the receiver's user ID.
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -172,10 +165,11 @@ public class MessageActivity extends AppCompatActivity {
     }
 
 
-    // method is used to read chat messages from a Firebase Realtime
+    //This method is used to read chat messages from a Firebase Realtime
     private void readMesagges(final String myid, final String userid, final String imageurl){
         //stores the chat messages
         mchat = new ArrayList<>();
+
         //creates the message adapter that is shown in text
         messageAdapter = new MessageAdapter(MessageActivity.this, mchat, imageurl);
 
@@ -184,13 +178,11 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mchat.clear();
-                /*
-                 * For each chat message, it deserializes the data
-                 * into a Chat object.
-                 * Checks if the message involves the current user (myid)
-                 * and the chat partner (userid) as either sender or receiver.
-                 * If the condition is met, the chat message is added to the mchat list.
-                 */
+
+                 // For each chat message, it deserializes the data into a Chat object.
+                 // Checks if the message involves the current user (myid)
+                 // and the chat partner (userid) as either sender or receiver.
+                 // If the condition is met, the chat message is added to the mchat list.
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
                     if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
@@ -208,12 +200,15 @@ public class MessageActivity extends AppCompatActivity {
         });
     }
 
-    // doesn't do a thing.. comes with the program
+    // This method is part of the Android Activity lifecycle
+    // but currently do not contain any specific functionality in the provided code.
     @Override
     protected void onResume() {
         super.onResume();
     }
-    // doesn't do a thing.. comes with the program
+
+    // This method is part of the Android Activity lifecycle
+    // but currently do not contain any specific functionality in the provided code.
     @Override
     protected void onPause() {
         super.onPause();

@@ -42,7 +42,11 @@ public class LoginActivity extends AppCompatActivity implements CommonApiCall.Re
     CollectionReference usersReference;
     private SharedPrefUtils prefUtils;
 
-
+    //This method is called when the activity is created.
+    // It initializes the UI elements, such as email, password, loginButton and signupText.
+    // It sets click listeners on the login button and the signup text,
+    // allowing users to either log in or navigate to the signup screen.
+    // It also initializes the SharedPrefUtils and Firebase authentication.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,8 +73,9 @@ public class LoginActivity extends AppCompatActivity implements CommonApiCall.Re
 
     }
 
-    // api call for login
-
+    // This method is called when the login button is clicked.
+    // It performs basic validation checks and then makes an API call for login.
+    // The API call is performed using the CommonApiCall class.
     void login(String strEmail, String strPassword) {
         if (strEmail.isEmpty() || strPassword.isEmpty()) {
             Toast.makeText(this, "Enter all fields", Toast.LENGTH_SHORT).show();
@@ -83,7 +88,14 @@ public class LoginActivity extends AppCompatActivity implements CommonApiCall.Re
         apiCall.Call();
     }
 
-    // check if user have created profile already
+    // After successful login, this method is called to check if the user has already created a profile.
+    // It updates the onesignalPlayerId field to an empty string in the user's Firestore document.
+    // It then checks if the user's Firestore document exists.
+    // If the user document doesn't exist, it creates a new user document with default profile
+    // information and navigates to the AddInfoActivity for the user to complete their registration.
+    // If the user document exists but doesn't have a username (indicating incomplete registration),
+    // it navigates to the AddInfoActivity.
+    // If the user document exists and has a username, it navigates to the MainActivity.
     private void doValidUserCheck() {
         DocumentReference userReference = FirebaseFirestore.getInstance().document("Users/" + prefUtils.get("email").replace(".", ""));
         userReference.update("onesignalPlayerId", "");
@@ -112,7 +124,7 @@ public class LoginActivity extends AppCompatActivity implements CommonApiCall.Re
         });
     }
 
-
+    // This method is responsible for navigating to AddInfoActivity.
     private void startAddInfoActivity() {
         Intent intent = new Intent(LoginActivity.this, AddInfoActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -120,6 +132,7 @@ public class LoginActivity extends AppCompatActivity implements CommonApiCall.Re
         finish();
     }
 
+    // This method is responsible for navigating to MainActivity.
     void startMainActivity() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -127,7 +140,10 @@ public class LoginActivity extends AppCompatActivity implements CommonApiCall.Re
         finish();
     }
 
-    //api response
+    //This methods is part of the CommonApiCall.ResponseHandler interface and are used to handle API responses.
+    //In this method the app processes the response data, extracts the login information,
+    // and checks if the login was successful.
+    // If the login is successful, it calls the doValidUserCheck method to determine the next steps.
     @Override
     public void onResponse(String response, String serviceType) {
         String jsonString = response;

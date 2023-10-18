@@ -25,6 +25,9 @@ public class SavedPostsActivity extends AppCompatActivity {
     PostAdapter postAdapter;
     private SharedPrefUtils prefUtils;
 
+    //This method is called when the activity is created.
+    //It initializes various UI elements, such as a RecyclerView for displaying saved posts and a close button.
+    //It also sets up a click listener for the close button.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +50,8 @@ public class SavedPostsActivity extends AppCompatActivity {
         readPosts();
     }
 
-    // fetching the user's saved posts from the firebase and load them
+    // This method is responsible for fetching and displaying the user's saved posts
+    // from the firebase and load them.
     void readPosts() {
         DocumentReference userReference = FirebaseFirestore.getInstance().document("Users/" + prefUtils.get("email").replace(".",""));
         userReference.get().addOnSuccessListener(userSnapshot -> {
