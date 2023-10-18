@@ -16,6 +16,9 @@ import com.example.instapets.activities.PostActivity;
  */
 
 public class SelectSourceDialogFragment extends DialogFragment {
+
+    //This static method is used to create a new instance of the SelectSourceDialogFragment and return it.
+    // It's a common pattern for creating dialog fragments with arguments.
     public static SelectSourceDialogFragment newInstance() {
         SelectSourceDialogFragment frag = new SelectSourceDialogFragment();
         Bundle args = new Bundle();
@@ -23,6 +26,13 @@ public class SelectSourceDialogFragment extends DialogFragment {
         return frag;
     }
 
+    //This method is responsible for creating and configuring the dialog that will be displayed.
+    // It sets the dialog's title to "Select from" and provides two options using the setItems method:
+    //"Camera": Allows the user to select an image from the device's camera.
+    //"Gallery": Allows the user to select an image from the device's gallery.
+    //When the user selects one of these options, the DialogFragment triggers the appropriate
+    // action based on the user's choice. For example, if "Camera" is selected,
+    // it calls the selectFromCamera() method from the hosting PostActivity.
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -41,6 +51,8 @@ public class SelectSourceDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    //This method is called when the dialog is canceled (when the user taps outside the dialog or presses
+    // the back button). In this case, it calls the startMainActivity() method from the hosting PostActivity.
     @Override
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);

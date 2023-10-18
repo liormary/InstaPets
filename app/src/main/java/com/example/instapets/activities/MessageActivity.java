@@ -74,7 +74,6 @@ public class MessageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // and this
                 startActivity(new Intent(MessageActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
@@ -109,7 +108,7 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
-
+        //fetches all the user's users from the firebase
         CollectionReference users = FirebaseFirestore.getInstance().collection("Users");
         users.document(userid).get().addOnSuccessListener(documentSnapshot -> {
             fellow = documentSnapshot.toObject(User.class);
@@ -118,20 +117,14 @@ public class MessageActivity extends AppCompatActivity {
             if (fellow.getProfileImageUrl()==null){
                 profile_image.setImageResource(R.drawable.logo);
             } else {
-                //and this
                 Glide.with(getApplicationContext()).load(fellow.getProfileImageUrl()).into(profile_image);
             }
             username.setText(fellow.getUsername());
             readMesagges(fuser, userid, fellow.getProfileImageUrl());
-
-
         });
-
-
-
-
     }
 
+    //this methode sends in a real time a message and saves it into the firebase
     private void sendMessage(String sender, final String receiver, String message, String time){
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -143,13 +136,20 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("isseen", false);
         hashMap.put("time", time);
 
+        //pushes the message data to the "Chats" node in the Firebase Realtime
         reference.child("Chats").push().setValue(hashMap);
 
-
-        // add user to chat fragment
+        //updates Chatlist for Sender
         final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(fuser)
                 .child(userid);
+
+        /*
+         * This code checks if the chat list entry for the sender
+         * (fuser) and receiver (userid) already exists.
+         * If it doesn't exist, it creates a new entry with the id
+         * field set to the receiver's user ID.
+         */
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -163,7 +163,7 @@ public class MessageActivity extends AppCompatActivity {
 
             }
         });
-        
+
         final DatabaseReference chatRefReceiver = FirebaseDatabase.getInstance().getReference("Chatlist")
                 .child(userid)
                 .child(fuser);
@@ -172,8 +172,11 @@ public class MessageActivity extends AppCompatActivity {
     }
 
 
+    // method is used to read chat messages from a Firebase Realtime
     private void readMesagges(final String myid, final String userid, final String imageurl){
+        //stores the chat messages
         mchat = new ArrayList<>();
+        //creates the message adapter that is shown in text
         messageAdapter = new MessageAdapter(MessageActivity.this, mchat, imageurl);
 
         reference = FirebaseDatabase.getInstance().getReference("Chats");
@@ -181,13 +184,19 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mchat.clear();
+                /*
+                 * For each chat message, it deserializes the data
+                 * into a Chat object.
+                 * Checks if the message involves the current user (myid)
+                 * and the chat partner (userid) as either sender or receiver.
+                 * If the condition is met, the chat message is added to the mchat list.
+                 */
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     Chat chat = snapshot.getValue(Chat.class);
                     if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
                             chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
                         mchat.add(chat);
                     }
-
                     recyclerView.setAdapter(messageAdapter);
                 }
             }
@@ -198,11 +207,13 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
     }
+
+    // doesn't do a thing.. comes with the program
     @Override
     protected void onResume() {
         super.onResume();
     }
-
+    // doesn't do a thing.. comes with the program
     @Override
     protected void onPause() {
         super.onPause();

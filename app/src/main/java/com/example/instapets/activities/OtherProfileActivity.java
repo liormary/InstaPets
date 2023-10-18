@@ -57,6 +57,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         fillUserData();
         readPosts();
 
+        //preform the follow\unfollow action
         followButton.setOnClickListener(v -> toggleFollow());
         messageButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, MessageActivity.class);
@@ -65,10 +66,11 @@ public class OtherProfileActivity extends AppCompatActivity {
         });
     }
 
-
+    //in case our user chooses to follow/unfollow other user
     private void toggleFollow() {
         amFollowing = !amFollowing;
-        if (amFollowing) {
+        //in any case of following or not - she shall update the firebase
+        if (amFollowing) {//in case of follows
             profilePageManager.noOfFollowers.setText(String.valueOf(Integer.parseInt(profilePageManager.noOfFollowers.getText().toString()) + 1));
 
             myReference.update("following", FieldValue.arrayUnion(userReference));
@@ -84,7 +86,7 @@ public class OtherProfileActivity extends AppCompatActivity {
                     myReference.collection("feed").document(postReference.getId()).set(map);
                 }
             });
-        } else {
+        } else {//in case of unfollow
             profilePageManager.noOfFollowers.setText(String.valueOf(Integer.parseInt(profilePageManager.noOfFollowers.getText().toString()) - 1));
 
             myReference.update("following", FieldValue.arrayRemove(userReference));
@@ -101,7 +103,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         updateFollowButton();
     }
 
-
+    //in case of a change, we shall update the label about if the user follow him now or not
     void updateFollowButton() {
         if (amFollowing) {
             followButton.setText("Following");
@@ -112,6 +114,8 @@ public class OtherProfileActivity extends AppCompatActivity {
         }
     }
 
+    /* create the other user's page with all the info from firebase
+     */
     void fillUserData() {
         userReference.get().addOnSuccessListener(documentSnapshot -> {
             User user = documentSnapshot.toObject(User.class);
@@ -125,6 +129,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         });
     }
 
+    //allows the visitor user to see the post from his profile
     private void readPosts() {
         profilePageManager.readPosts(userReference);
     }

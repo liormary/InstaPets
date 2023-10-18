@@ -13,7 +13,6 @@ import java.util.Locale;
  * (whether we want the times in minutes/hours that have passed
  * and whether we want a display of the current time and more...)
  */
-
 public class DateFormatter {
     public static DateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss", Locale.ENGLISH);
 

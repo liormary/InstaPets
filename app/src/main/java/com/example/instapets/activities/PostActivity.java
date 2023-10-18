@@ -55,9 +55,13 @@ public class PostActivity extends AppCompatActivity {
     String currentPhotoPath;
     private SharedPrefUtils prefUtils;
 
+    //in case of uploading a photo from the phone gallery
     ActivityResultLauncher<Intent> fromGalleryResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent data = result.getData();
+            /*also important to check if the photo from the gallery isn't null unlike the
+             * camera that creates it and makes sure its isn't null
+             */
             if (data != null && data.getData() != null) {
                 filePath = data.getData();
                 showActivity(true);
@@ -67,6 +71,7 @@ public class PostActivity extends AppCompatActivity {
             startMainActivity();
         }
     });
+    //in case of uploading a photo from the phone camera
     ActivityResultLauncher<Intent> fromCameraResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             showActivity(true);
@@ -95,6 +100,7 @@ public class PostActivity extends AppCompatActivity {
         storageReference = FirebaseStorage.getInstance().getReference();
         db = FirebaseFirestore.getInstance();
 
+        //the buttons of posting or cancel the posting
         closeButton.setOnClickListener(view -> {
             startMainActivity();
         });
@@ -102,6 +108,7 @@ public class PostActivity extends AppCompatActivity {
             closeKeyboard();
             publishPost();
         });
+        //
 
         String type = getIntent().getStringExtra("type");
 
@@ -114,6 +121,7 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
+    //??????????  DIOLOG....
     void showDialog() {
         SelectSourceDialogFragment newFragment = SelectSourceDialogFragment.newInstance();
         newFragment.show(getSupportFragmentManager(), "dialog");
@@ -160,15 +168,20 @@ public class PostActivity extends AppCompatActivity {
         }
     }
 
+    //????? DIOLOG....
     private void publishPost() {
         if (filePath != null) {
             ProgressDialog progressDialog = new ProgressDialog(this);
+
+            //starts the proses of uploading the post
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
+            //saves the upload time
             String postId = DateFormatter.getCurrentTime();
             StorageReference ref = storageReference.child("Posts/" + postId);
 
+            //in case of success to uploading
             ref.putFile(filePath).addOnSuccessListener(snapshot -> {
                 Toast.makeText(this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
 
@@ -182,9 +195,13 @@ public class PostActivity extends AppCompatActivity {
                     });
                     updateUserPostsAndFeed(postRef);
                 });
+
+                //in case of success to uploading
             }).addOnFailureListener(e -> {
                 progressDialog.dismiss();
                 Toast.makeText(this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                //in case of delay for any reason - we shall let it wait for a while and give it a chance...
             }).addOnProgressListener(taskSnapshot -> {
                 double progress =
                         ((100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()));
@@ -218,6 +235,7 @@ public class PostActivity extends AppCompatActivity {
         });
     }
 
+    //after finishing creating a post - returns to the main activity
     public void startMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

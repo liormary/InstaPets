@@ -77,17 +77,23 @@ public class EditInfoActivity extends AppCompatActivity {
         profileImageEditButton.setOnClickListener(view -> selectImage());
         closeButton.setOnClickListener(view -> finish());
 
+        //holds on all the user's followers in an arrayList
         userNames = new ArrayList<>();
         FirebaseFirestore.getInstance().collection("Users").get().addOnSuccessListener(userSnapshots -> {
             for (DocumentSnapshot userSnapshot : userSnapshots) {
                 User user = userSnapshot.toObject(User.class);
                 userNames.add(user.getUsername());
-               // profileImageUri = Uri.parse(user.getProfileImageUrl());
             }
         });
+
+        /*
+         * monitors the text input in real-time
+         * and performs certain actions based on the input
+         */
         username.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //before any changes have made
                 valid = true;
             }
 
@@ -98,15 +104,18 @@ public class EditInfoActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                //checks if the change is valid!
                 if (!s.toString().matches("^\\w+$") || s.length() < 3 || s.length() > 15) {
                     valid = false;
                 }
+                //checks if its not exist already
                 for (String name : userNames) {
                     if (!name.equals(user.getUsername()) && name.equals(s.toString())) {
                         valid = false;
                         break;
                     }
                 }
+                //saves the changes into firebase
                 if (!valid) {
                     username.setTextColor(getResources().getColor(R.color.like));
                     saveInfoButton.setClickable(false);
@@ -117,6 +126,7 @@ public class EditInfoActivity extends AppCompatActivity {
             }
         });
 
+        //the action of the saving button
         saveInfoButton.setOnClickListener(view -> {
             data.put("name", name.getText().toString());
             data.put("username", username.getText().toString());
@@ -142,6 +152,7 @@ public class EditInfoActivity extends AppCompatActivity {
         });
     }
 
+    //fills up the user's data from the firebase
     private void fillUserData() {
         userReference = FirebaseFirestore.getInstance().collection("Users")
                 .document(prefUtils.get("email").replace(".",""));
@@ -155,30 +166,40 @@ public class EditInfoActivity extends AppCompatActivity {
         });
     }
 
+    //opens a post
     private void selectImage() {
         Intent intent = new Intent();
         intent.setType("image/*").setAction(Intent.ACTION_GET_CONTENT);
         myActivityResultLauncher.launch(Intent.createChooser(intent, "Select Picture"));
     }
 
+    //updating data of the profile image
     private void updateImageAndData() {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
         ProgressDialog progressDialog = new ProgressDialog(this);
+
+        //starts the proses
         progressDialog.setTitle("Saving Profile...");
         progressDialog.show();
         String postId = user.getId();
         StorageReference ref = storageReference.child("Profile Pictures/" + postId);
 
+        //starts to upload it
         ref.putFile(profileImageUri).addOnSuccessListener(snapshot -> {
             Toast.makeText(this, "Image Uploaded!!", Toast.LENGTH_SHORT).show();
+            //in case of succsess - saves the new update into the firebase
             storageReference.child("Profile Pictures/").child(postId).getDownloadUrl().addOnSuccessListener(uri -> {
                 data.put("profileImageUrl", uri.toString());
                 updateData();
                 progressDialog.dismiss();
+
+                //in case of a failure in uploading it
             }).addOnFailureListener(e -> progressDialog.dismiss());
         }).addOnFailureListener(e -> {
             progressDialog.dismiss();
             Toast.makeText(this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+
+            //in case of delay for any reason - we shall let it wait for a while and give it a chance...
         }).addOnProgressListener(taskSnapshot -> {
             double progress =
                     ((100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount()));

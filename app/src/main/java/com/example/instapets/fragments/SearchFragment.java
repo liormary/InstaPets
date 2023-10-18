@@ -28,10 +28,11 @@ import java.util.List;
 public class SearchFragment extends Fragment {
     SearchView searchbar;
     RecyclerView recyclerViewProfiles;
-    TextView messageText;
+    TextView messageText; // displays a message when there are no search results to show.
     ProfileAdapter profileAdapter;
-    List<User> profiles, allProfiles;
-    ImageView  closeButton;
+    List<User> profiles, allProfiles; //Two lists, profiles that fit to the search and allProfiles.
+
+    ImageView closeButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,9 +54,10 @@ public class SearchFragment extends Fragment {
         recyclerViewProfiles.setHasFixedSize(true);
         recyclerViewProfiles.setAdapter(profileAdapter);
 
-
+        //The readProfiles() method is called to fetch all available profiles.
         readProfiles();
 
+        //A listener is added to the searchbar to filter profiles as the user types in the search query.
         searchbar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -71,6 +73,10 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
+    //This method filters profiles based on the search query.
+    // It compares the search query to the names and usernames of users and updates the profiles
+    // list accordingly.
+    // It also handles the visibility of the "No results" message.
     private void filter(String text) {
         profiles.clear();
         messageText.setVisibility(View.GONE);
@@ -86,6 +92,8 @@ public class SearchFragment extends Fragment {
         profileAdapter.filterList(profiles);
     }
 
+    //This method reads all user profiles from the Firebase database and populates the
+    // allProfiles list with this data.
     private void readProfiles() {
         CollectionReference userReference = FirebaseFirestore.getInstance().collection("Users");
         userReference.get().addOnSuccessListener(usersSnapshots -> {

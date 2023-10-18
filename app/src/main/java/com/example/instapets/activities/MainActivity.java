@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //bottom navigation changes fragment
-
         bottomNavigationView.setOnItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.nav_home:

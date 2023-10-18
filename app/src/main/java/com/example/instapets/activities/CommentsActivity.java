@@ -67,6 +67,7 @@ public class CommentsActivity extends AppCompatActivity {
             KeyboardManager.openKeyboard(this);
         }
 
+        //committing here a comment in a post
         sendButton.setOnClickListener(v -> {
             String commentString = commentText.getText().toString();
             if (commentString.isEmpty()) return;
@@ -87,6 +88,11 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
 
+    /*
+     * This method is used to intercept touch events
+     * sent to the activity before they are dispatched to the window. In this case, it's being used to handle
+     * touch events and close the keyboard if it is currently open
+     */
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         View focused = getCurrentFocus();
@@ -96,11 +102,18 @@ public class CommentsActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(event);
     }
 
+    /*
+     * this method meant for representing all the comments in a post for
+     * the firebase
+     */
     private void readComments() {
+        //getting from the Firebase all the comments
         commentsReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+                //clears the arrayList before entering the relative comments
                 comments.clear();
                 for (DataSnapshot commentSnapshot : task.getResult().getChildren()) {
+                    //all comments who has the correct value for our post - will be added to the list
                     comments.add(commentSnapshot.getValue(Comment.class));
                 }
                 commentAdapter.notifyDataSetChanged();

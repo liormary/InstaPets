@@ -41,8 +41,6 @@ public class ChatHomeActivity extends AppCompatActivity {
     private List<User> mUsers;
     FrameLayout frameLayout;
 
-    DatabaseReference reference;
-
     private SharedPrefUtils prefUtils;
 
     @Override
@@ -71,24 +69,25 @@ public class ChatHomeActivity extends AppCompatActivity {
         });
     }
 
+    //These method is used to read and display user profiles in a chat application
     private void readProfiles() {
+        //bringing up the FireBase instance for load the chatList from the current user by using the email key
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(prefUtils.get("email").replace(".",""));
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //starting to upload the users into our arrayList
                 usersList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
                     usersList.add(chatlist);
                 }
+                //in case user has no friends..
                 if(usersList.size()==0){
                     frameLayout.setVisibility(View.VISIBLE);
-
                 }
                 else{
                     frameLayout.setVisibility(View.GONE);
-
                 }
 
                 chatList();
@@ -100,12 +99,19 @@ public class ChatHomeActivity extends AppCompatActivity {
             }
         });
     }
+
+    /*
+     * this method is responsible for populating a list of users (mUsers)
+     * for a chat application
+     */
     private void chatList() {
         mUsers = new ArrayList<>();
 
+        //bringing up the users collection from the FireBase instance
         CollectionReference userReference = FirebaseFirestore.getInstance().collection("Users");
         userReference.get().addOnSuccessListener(usersSnapshots -> {
             mUsers.clear();
+            //now for filling up the list we will pick only the users that got the same chat id with our user
             for (DocumentSnapshot userSnapshot : usersSnapshots) {
                 User user = userSnapshot.toObject(User.class);
                 for (Chatlist chatlist : usersList){
@@ -115,6 +121,10 @@ public class ChatHomeActivity extends AppCompatActivity {
                     }
                 }
             }
+            /*
+             * creates a profile adapters in the ChatHomeActivity for
+             * all the users that added into the mUsers
+             */
             profileAdapter = new ProfileAdapter(ChatHomeActivity.this, mUsers, "MESSAGE");
             recyclerViewProfiles.setAdapter(profileAdapter);
         });

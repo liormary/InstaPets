@@ -47,11 +47,13 @@ public class SavedPostsActivity extends AppCompatActivity {
         readPosts();
     }
 
+    // fetching the user's saved posts from the firebase and load them
     void readPosts() {
         DocumentReference userReference = FirebaseFirestore.getInstance().document("Users/" + prefUtils.get("email").replace(".",""));
         userReference.get().addOnSuccessListener(userSnapshot -> {
             User user = userSnapshot.toObject(User.class);
             assert user != null;
+            // fetches each saved post from the user's firebase database
             for (DocumentReference savedPostReference : user.getSaved()) {
                 savedPostReference.get().addOnSuccessListener(savedPostSnapshot -> postAdapter.addPost(savedPostSnapshot.toObject(Post.class)));
             }

@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 /**
  * this class represents the screen of the home page
  */
+
 public class HomeFragment extends Fragment {
 
     RecyclerView recyclerViewPosts;
@@ -35,14 +36,17 @@ public class HomeFragment extends Fragment {
     ExtendedFloatingActionButton floatingActionButton;
 
 
+    //This method is part of the Android Fragment lifecycle and is called
+    // when the fragment needs to create its user interface (UI).
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         recyclerViewPosts = view.findViewById(R.id.recyclerview_posts);
         prefUtils = new SharedPrefUtils(requireActivity());
         toolbar = view.findViewById(R.id.top_menu);
-        //to shrink "new post" button
+        floatingActionButton = view.findViewById(R.id.extendedFloatingButton);
+
+        // When the user scrolls, it determines whether to extend or shrink the floating action button.
         recyclerViewPosts.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -51,7 +55,6 @@ public class HomeFragment extends Fragment {
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
-
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -62,7 +65,8 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        floatingActionButton = view.findViewById(R.id.extendedFloatingButton);
+        //When the user clicks the floating action button, it opens a dialog for creating a new post.
+        // The specific type of post (text or picture) can be chosen.
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +74,11 @@ public class HomeFragment extends Fragment {
 
             }
         });
+
+        //The toolbar contains menu items, and each item corresponds to a specific action. For example:
+        //"nav_post_image" opens a new picture post creation activity.
+        //"nav_post_text" opens a new text post creation activity.
+        //"nav_chat" navigates to a chat activity.
         toolbar.setOnMenuItemClickListener(item -> {
             Intent intent;
             switch (item.getItemId()) {
@@ -101,6 +110,11 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    //A PromptDialog is used for creating new posts.
+    // It allows users to choose the type of post to create.
+    //The dl listener handles the actions when the prompt dialog is dismissed.
+    // Depending on the user's choice (picture or text post),
+    // it starts the corresponding activity for creating a new post.
     PromptDialog.DismissListener dl = new PromptDialog.DismissListener() {
 
         @Override
@@ -127,6 +141,9 @@ public class HomeFragment extends Fragment {
 
     };
 
+    //This method fetches posts from a Firebase collection named "feed."
+    // These posts are associated with the user's feed.
+    // It clears the existing posts in the adapter and populates it with the retrieved posts.
     void readPosts() {
         CollectionReference feedReference = FirebaseFirestore.getInstance().collection("Users").document(prefUtils.get("email").replace(".", "")).collection("feed");
         feedReference.get().addOnSuccessListener(feedSnapshots -> {
