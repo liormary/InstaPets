@@ -2,16 +2,8 @@ package com.example.instapets.apiCalls;
 
 import android.app.Activity;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.example.instapets.utilities.ApplicationClass;
-import com.example.instapets.utilities.SharedPrefUtils;
 
-import java.util.HashMap;
+import com.android.volley.VolleyError;
 import java.util.Map;
 
 /**
