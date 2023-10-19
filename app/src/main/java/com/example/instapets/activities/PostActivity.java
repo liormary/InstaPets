@@ -113,7 +113,6 @@ public class PostActivity extends AppCompatActivity {
             closeKeyboard();
             publishPost();
         });
-        //
 
         String type = getIntent().getStringExtra("type");
 
@@ -143,7 +142,6 @@ public class PostActivity extends AppCompatActivity {
                 ".jpg",         /* suffix */
                 storageDir      /* directory */
         );
-
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
