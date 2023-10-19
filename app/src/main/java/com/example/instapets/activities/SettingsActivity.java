@@ -26,7 +26,6 @@ import com.example.instapets.models.User;
 public class SettingsActivity extends AppCompatActivity {
     LinearLayout settingsList;
     TextView logout;
-    GoogleSignInClient googleSignInClient;
     DocumentReference userReference;
     private SharedPrefUtils prefUtils;
     LinearLayout linearLayout;
@@ -47,7 +46,6 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
         prefUtils = new SharedPrefUtils(this);
 
-        googleSignInClient = GoogleSignIn.getClient(this, GoogleSignInOptions.DEFAULT_SIGN_IN);
         userReference = FirebaseFirestore.getInstance().collection("Users").document(prefUtils.get("email").replace(".",""));
 
         settingsList = findViewById(R.id.settings_list);

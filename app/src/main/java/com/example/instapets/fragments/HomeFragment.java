@@ -75,30 +75,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        //The toolbar contains menu items, and each item corresponds to a specific action. For example:
-        //"nav_post_image" opens a new picture post creation activity.
-        //"nav_post_text" opens a new text post creation activity.
-        //"nav_chat" navigates to a chat activity.
+        //The toolbar navigates to a chat activity.
         toolbar.setOnMenuItemClickListener(item -> {
             Intent intent;
-            switch (item.getItemId()) {
-                case R.id.nav_post_image:
-                    intent = new Intent(requireActivity(), PostActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("type", "picture");
-                    startActivity(intent);
-                    break;
-                case R.id.nav_post_text:
-                    intent = new Intent(requireActivity(), PostActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("type", "text");
-                    startActivity(intent);
-                    break;
-                case R.id.nav_chat:
+            if (item.getItemId() == R.id.nav_chat) {
                     intent = new Intent(requireActivity(), ChatHomeActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                    break;
             }
             return true;
         });

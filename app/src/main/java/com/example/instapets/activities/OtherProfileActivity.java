@@ -61,7 +61,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         fillUserData();
         readPosts();
 
-        //preform the follow\unfollow action
+        //preform the follow or unfollow action
         followButton.setOnClickListener(v -> toggleFollow());
         messageButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, MessageActivity.class);
