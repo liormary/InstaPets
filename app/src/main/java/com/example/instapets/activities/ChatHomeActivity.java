@@ -58,9 +58,9 @@ public class ChatHomeActivity extends AppCompatActivity {
         frameLayout = findViewById(R.id.es_layout);
 
         prefUtils = new SharedPrefUtils(this);
-        usersList = new ArrayList<>();
-        profiles = new ArrayList<>();
-        allProfiles = new ArrayList<>();
+        usersList = new ArrayList<>(); //the chat list of the user
+        profiles = new ArrayList<>(); //the profiles that the user chat with
+        allProfiles = new ArrayList<>(); // all the profiles
         profileAdapter = new ProfileAdapter(this, profiles, "MESSAGE");
         recyclerViewProfiles.setHasFixedSize(true);
         recyclerViewProfiles.setAdapter(profileAdapter);

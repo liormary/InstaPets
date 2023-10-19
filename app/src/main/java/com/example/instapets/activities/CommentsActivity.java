@@ -94,7 +94,8 @@ public class CommentsActivity extends AppCompatActivity {
 
      // This method is used to intercept touch events sent to the activity before
      // they are dispatched to the window. In this case, it's being used to handle
-     // touch events and close the keyboard if it is currently open
+     // touch events and close the keyboard if it is currently open when
+     // the user touch something that is not the keyboard
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         View focused = getCurrentFocus();

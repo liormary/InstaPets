@@ -70,7 +70,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         });
     }
 
-    //This method allows the current user to follow/unfollow other user
+    //This method allows the current user to follow or unfollow other user
     private void toggleFollow() {
         amFollowing = !amFollowing;
         //in any case of following or not - she shall update the firebase
