@@ -56,7 +56,7 @@ public class ApplicationClass extends Application {
      * @param req The request to be added to the queue.
      * @param <T> The type of the request.
      */
-    public <T> void addToRequestQueue(Request<T> req) {
+       public <T> void addToRequestQueue(Request<T> req) {
         req.setTag(TAG);
         getRequestQueue().add(req);
     }
