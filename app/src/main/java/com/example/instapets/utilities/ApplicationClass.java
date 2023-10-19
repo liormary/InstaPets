@@ -20,7 +20,6 @@ public class ApplicationClass extends Application {
 
     /**
      * Get the singleton instance of the ApplicationClass.
-     *
      * @return The instance of the ApplicationClass.
      */
     public static synchronized ApplicationClass getInstance() {
