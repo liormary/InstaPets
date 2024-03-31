@@ -1,4 +1,3 @@
-![830633_result_rotated_001](https://github.com/liormary/InstaPets/assets/92310322/82eee508-1a39-43b9-bd59-587aaec5e162)
 ![830633_result_rotated_002](https://github.com/liormary/InstaPets/assets/92310322/bfe8bb32-a45f-4603-a0ec-69ea7c8b5af3)
 ![830633_result_rotated_003](https://github.com/liormary/InstaPets/assets/92310322/dd4d165d-0de3-484b-b4fa-bda807f6bd6c)
 ![830633_result_rotated_004](https://github.com/liormary/InstaPets/assets/92310322/30a66fa3-a789-48b1-81ce-b943e36d90c4)
